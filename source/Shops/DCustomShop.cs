@@ -9,7 +9,7 @@ using c = CustomShops.Control;
 
 namespace DynamicShops.Shops;
 
-public class DCustomShop : TaggedShop, ITextIcon, ICustomPrice, IDiscountFromFaction
+public class DCustomShop : TaggedShop, ITextIcon, IDiscountFromFaction
 {
     public DCustomShopDescriptor Descriptor { get; private set; }
 
@@ -64,7 +64,7 @@ public class DCustomShop : TaggedShop, ITextIcon, ICustomPrice, IDiscountFromFac
         Tags = tags;
     }
 
-    public int GetPrice(TypedShopDefItem item) => PriceHelpers.GetPrice(item);
+    // public int GetPrice(TypedShopDefItem item) => PriceHelpers.GetPrice(item);
 
     public override string Name => Descriptor.Name;
     public override string TabText => Descriptor.TabText;
