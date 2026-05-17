@@ -2,7 +2,7 @@ name: Validate JSON
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, nightmare-edition]
   pull_request:
     branches: [main, master]
 
@@ -16,3 +16,21 @@ jobs:
           python-version: "3.12"
       - name: Validate JSON files
         run: python .github/scripts/validate_json.py
+
+  check-shop-refs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: DynamicShops
+      - uses: actions/checkout@v4
+        with:
+          repository: BattletechModders/RogueTech
+          path: RogueTech
+          sparse-checkout: "**/*.csv"
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check shop item collection references against RogueTech
+        run: python DynamicShops/.github/scripts/check_shop_refs.py RogueTech/
