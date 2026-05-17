@@ -1,0 +1,8 @@
+#!/bin/sh
+# Pre-commit hook: validate staged JSON files.
+# Activate with: git config core.hooksPath .githooks
+
+staged=$(git diff --cached --name-only --diff-filter=ACM | grep '\.json$')
+[ -z "$staged" ] && exit 0
+# shellcheck disable=SC2086
+python3 "$(git rev-parse --show-toplevel)/.githooks/validate_staged_json.py" $staged
