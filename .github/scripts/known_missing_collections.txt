@@ -2,32 +2,6 @@
 # These IDs are referenced in DynamicShops shop files but have no corresponding
 # CSV file in RogueTech's data directories.
 #
-# RT_List_<Faction>_Major/Minor: faction-specific major/minor shop lists
-# referenced in fshops/*.json but missing from RogueTech/Core/DynamicShops/data/
-RT_List_Davion_Major
-RT_List_Davion_Minor
-RT_List_Kurita_Major
-RT_List_Kurita_Minor
-RT_List_Liao_Major
-RT_List_Liao_Minor
-RT_List_Marik_Major
-RT_List_Marik_Minor
-RT_List_Steiner_Major
-RT_List_Steiner_Minor
-#
-# RT_standard_Major/Minor: standard tier shop lists missing from RogueTech
-RT_standard_Major
-RT_standard_Minor
-#
-# BTA_* items: BattleTech Advanced 3062 mod references — wrong mod context
-BTA_List_Battlefield
-BTA_List_BlackMarket
-BTA_List_Chemicals
-BTA_List_Electronics
-BTA_List_Industrial
-BTA_List_Mining
-BTA_List_Research
-BTA_List_SLDF
-BTA_standard_Major
-BTA_standard_Minor
-BTA_standard_Primitive
+# (All previously-missing RT_List_<Faction>_Major/Minor and RT_standard_Major/Minor
+# CSVs were created in RogueTech/Core/DynamicShops/data/ on 2026-05-17.
+# BTA_* references are in bta/ which is excluded from scanning — wrong-mod context.)

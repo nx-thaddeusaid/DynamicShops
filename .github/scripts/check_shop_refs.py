@@ -53,8 +53,12 @@ known_missing = load_allowlist("known_missing_collections.txt")
 
 refs: dict[str, list[str]] = {}  # id -> list of source files
 
+SKIP_DIRS = {"bta"}  # wrong-mod directory, not loaded by any mod.json
+
 for f in ds_root.rglob("*.json"):
     if any(part.startswith(".") for part in f.parts):
+        continue
+    if any(part in SKIP_DIRS for part in f.relative_to(ds_root).parts):
         continue
     if f.name in ("mod.json", "modstate.json"):
         continue
