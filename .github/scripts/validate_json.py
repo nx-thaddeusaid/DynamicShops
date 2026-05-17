@@ -7,7 +7,8 @@ Checks:
   2. No duplicate keys within a single JSON object
   3. Shop def files are root-level arrays whose entries each have an 'items' field
   4. Faction shop (fshops/) entries also have a 'factions' field
-  5. mod.json has 'Name' when manifest keys are present
+  5. System shop (sshops/) conditions only use known keys: tag, owner, rep
+  6. mod.json has 'Name' when manifest keys are present
 
 Exit code 0 = clean, non-zero = failures found.
 """
@@ -17,6 +18,7 @@ import sys
 from pathlib import Path
 
 MOD_JSON_MANIFEST_KEYS = {"Name", "Enabled", "Active", "DLL", "Manifest", "DependsOn"}
+VALID_CONDITION_KEYS = {"tag", "owner", "rep"}
 
 # Source directory contains C# code, not game data.
 SKIP_DIRS = {"source"}
@@ -88,6 +90,12 @@ def validate_file(path: Path, errors: list[str]) -> None:
             errors.append(f"{path}: entry [{i}] missing 'items'")
         if stype == "fshop" and "factions" not in entry:
             errors.append(f"{path}: entry [{i}] missing 'factions'")
+        if stype == "sshop" and "conditions" in entry:
+            cond = entry["conditions"]
+            if isinstance(cond, dict):
+                unknown = set(cond.keys()) - VALID_CONDITION_KEYS
+                if unknown:
+                    errors.append(f"{path}: entry [{i}] unknown condition key(s): {sorted(unknown)}")
 
 
 def main() -> int:
