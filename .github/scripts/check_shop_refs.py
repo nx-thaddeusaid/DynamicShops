@@ -45,8 +45,12 @@ if not args:
     print(f"Usage: check_shop_refs.py [{UPDATE_BASELINE_FLAG}] <roguetech-root>")
     sys.exit(2)
 
-rt_root = Path(args[0])
-scripts_dir = Path(__file__).parent
+# Resolve to absolute paths up front. A relative rt_root like "../RogueTech"
+# (the documented local invocation) otherwise carries a ".." component, and the
+# dotfile-skip filters below would treat *every* path as hidden — collecting zero
+# valid IDs and reporting all refs as broken. (Lanner 2026-05-21)
+rt_root = Path(args[0]).resolve()
+scripts_dir = Path(__file__).resolve().parent
 ds_root = scripts_dir.parent.parent
 baseline_path = scripts_dir / "faction_shop_baseline.txt"
 
@@ -54,7 +58,9 @@ baseline_path = scripts_dir / "faction_shop_baseline.txt"
 
 valid_ids: set[str] = set()
 for csv_file in rt_root.rglob("*.csv"):
-    if any(part.startswith(".") for part in csv_file.parts):
+    # Skip dot-dirs (e.g. .git) — check parts *relative to rt_root* so an
+    # absolute prefix or a dotted parent of the repo can't trip the filter.
+    if any(part.startswith(".") for part in csv_file.relative_to(rt_root).parts):
         continue
     valid_ids.add(csv_file.stem)
 
@@ -77,9 +83,10 @@ refs: dict[str, list[str]] = {}  # id -> list of source files
 SKIP_DIRS = {"bta"}  # wrong-mod directory, not loaded by any mod.json
 
 for f in ds_root.rglob("*.json"):
-    if any(part.startswith(".") for part in f.parts):
+    rel_parts = f.relative_to(ds_root).parts
+    if any(part.startswith(".") for part in rel_parts):
         continue
-    if any(part in SKIP_DIRS for part in f.relative_to(ds_root).parts):
+    if any(part in SKIP_DIRS for part in rel_parts):
         continue
     if f.name in ("mod.json", "modstate.json"):
         continue
